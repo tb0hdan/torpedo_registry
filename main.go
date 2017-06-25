@@ -26,13 +26,6 @@ type BotAPI struct {
 			BuildDate string
 			Version   string
 		}
-		Config struct {
-			GoogleWebAppKey    *string
-			SoundCloudClientID *string
-			LastFmKey          *string
-			LastFmSecret       *string
-			PinterestToken     *string
-		}
 		GetCachedItem      func(string) string
 		SetCachedItems     func(string, map[int]string) string
 		GetCommandHandlers func() map[string]func(*BotAPI, interface{}, string)
@@ -50,6 +43,7 @@ type BotAPI struct {
 }
 
 var (
+	config		= make(map[string]string)
 	handlers    = make(map[string]func(*BotAPI, interface{}, string))
 	help        = make(map[string]string)
 	preparsers  = make(map[string]func())
@@ -58,10 +52,12 @@ var (
 
 func RegisterHandler(name string, f func(*BotAPI, interface{}, string)) {
 	handlers[name] = f
+	return
 }
 
 func RegisterHelp(name, help_str string) {
 	help[name] = help_str
+	return
 }
 
 func GetHandlers() map[string]func(*BotAPI, interface{}, string) {
@@ -74,10 +70,12 @@ func GetHelp() map[string]string {
 
 func RegisterPreParser(name string, f func()) {
 	preparsers[name] = f
+	return
 }
 
 func RegisterPostParser(name string, f func()) {
 	postparsers[name] = f
+	return
 }
 
 func GetPreParsers() map[string]func() {
@@ -86,4 +84,13 @@ func GetPreParsers() map[string]func() {
 
 func GetPostParsers() map[string]func() {
 	return postparsers
+}
+
+func GetConfig() map[string]string {
+	return config
+}
+
+func SetConfigOption(option, value string) {
+	config[option] = value
+	return
 }
