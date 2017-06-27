@@ -36,8 +36,8 @@ type BotAPI struct {
 		}
 		GetCachedItem      func(string) string
 		SetCachedItems     func(string, map[int]string) string
-		//GetCommandHandlers func() map[string]func(*BotAPI, interface{}, string)
-		//GetHelp            func() map[string]string
+		GetCommandHandlers func() map[string]func(*BotAPI, interface{}, string)
+		GetHelp            func() map[string]string
 		Stats              struct {
 			StartTimestamp         int64
 			ProcessedMessages      int64
