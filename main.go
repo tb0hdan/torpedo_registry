@@ -1,5 +1,13 @@
 package torpedo_registry
 
+import (
+	"fmt"
+	"sync"
+)
+
+var Config *ConfigStruct
+var once sync.Once
+
 type RichMessage struct {
 	BarColor  string
 	Text      string
@@ -28,8 +36,8 @@ type BotAPI struct {
 		}
 		GetCachedItem      func(string) string
 		SetCachedItems     func(string, map[int]string) string
-		GetCommandHandlers func() map[string]func(*BotAPI, interface{}, string)
-		GetHelp            func() map[string]string
+		//GetCommandHandlers func() map[string]func(*BotAPI, interface{}, string)
+		//GetHelp            func() map[string]string
 		Stats              struct {
 			StartTimestamp         int64
 			ProcessedMessages      int64
@@ -42,55 +50,68 @@ type BotAPI struct {
 	CommandPrefix string
 }
 
-var (
-	config		= make(map[string]string)
-	handlers    = make(map[string]func(*BotAPI, interface{}, string))
-	help        = make(map[string]string)
-	preparsers  = make(map[string]func())
-	postparsers = make(map[string]func())
-)
+type ConfigStruct struct {
+	data		map[string]string
+	handlers	map[string]func(*BotAPI, interface{}, string))
+	help		map[string]string)
+	preparsers	map[string]func(cfg *ConfigStruct)
+	postparsers	map[string]func(cfg *ConfigStruct)
+}
 
-func RegisterHandler(name string, f func(*BotAPI, interface{}, string)) {
-	handlers[name] = f
+func (self *ConfigStruct) RegisterHandler(name string, f func(*BotAPI, interface{}, string)) {
+	self.handlers[name] = f
 	return
 }
 
-func RegisterHelp(name, help_str string) {
-	help[name] = help_str
+func (self *ConfigStruct) RegisterHelp(name, help_str string) {
+	self.help[name] = help_str
 	return
 }
 
-func GetHandlers() map[string]func(*BotAPI, interface{}, string) {
-	return handlers
+func (self *ConfigStruct) GetHandlers() map[string]func(*BotAPI, interface{}, string) {
+	return self.handlers
 }
 
-func GetHelp() map[string]string {
-	return help
+func (self *ConfigStruct) GetHelp() map[string]string {
+	return self.help
 }
 
-func RegisterPreParser(name string, f func()) {
-	preparsers[name] = f
+func (self *ConfigStruct) SetConfig(key, val string) {
+	self.data[key] = val
 	return
 }
 
-func RegisterPostParser(name string, f func()) {
-	postparsers[name] = f
+func (self *ConfigStruct) GetConfig() map[string]string {
+	return self.data
+}
+
+func (self *ConfigStruct) GetPreParsers() map[string]func(cfg *ConfigStruct) {
+	return self.preparsers
+}
+
+func (self *ConfigStruct) GetPostParsers() map[string]func(cfg *ConfigStruct) {
+	return self.postparsers
+}
+
+func (self *ConfigStruct) RegisterPreParser(name string, f func(cfg *ConfigStruct)) {
+	self.preparsers[name] = f
 	return
 }
 
-func GetPreParsers() map[string]func() {
-	return preparsers
-}
-
-func GetPostParsers() map[string]func() {
-	return postparsers
-}
-
-func GetConfig() map[string]string {
-	return config
-}
-
-func SetConfigOption(option, value string) {
-	config[option] = value
+func (self *ConfigStruct) RegisterPostParser(name string, f func(cfg *ConfigStruct)) {
+	self.postparsers[name] = f
 	return
+}
+
+func init() {
+	fmt.Println("Registry init called...")
+	once.Do(func() {
+		fmt.Println("Registry once.Do called...")
+		Config = &ConfigStruct{}
+		Config.data = make(map[string]string)
+		Config.handlers    = make(map[string]func(*BotAPI, interface{}, string))
+		Config.help        = make(map[string]string)
+		Config.preparsers = make(map[string]func(cfg *ConfigStruct))
+		Config.postparsers = make(map[string]func(cfg *ConfigStruct))
+	})
 }
