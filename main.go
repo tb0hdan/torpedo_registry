@@ -52,8 +52,8 @@ type BotAPI struct {
 
 type ConfigStruct struct {
 	data		map[string]string
-	handlers	map[string]func(*BotAPI, interface{}, string))
-	help		map[string]string)
+	handlers	map[string]func(*BotAPI, interface{}, string)
+	help		map[string]string
 	preparsers	map[string]func(cfg *ConfigStruct)
 	postparsers	map[string]func(cfg *ConfigStruct)
 }
