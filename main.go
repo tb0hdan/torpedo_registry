@@ -42,8 +42,8 @@ type BotAPI struct {
 			StartTimestamp         int64
 			ProcessedMessages      int64
 			ProcessedMessagesTotal int64
-			ConnectedAccounts      int64
-			TotalAccounts          int64
+			ConnectedAccounts      int32
+			TotalAccounts          int32
 		}
 		PostMessage func(interface{}, string, *BotAPI, ...interface{})
 	}
