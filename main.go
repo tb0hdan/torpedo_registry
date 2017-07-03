@@ -51,6 +51,7 @@ type BotAPI struct {
 }
 
 type ConfigStruct struct {
+	coroutines  map[string]func(cfg *ConfigStruct)
 	data		map[string]string
 	handlers	map[string]func(*BotAPI, interface{}, string)
 	help		map[string]string
@@ -103,11 +104,22 @@ func (self *ConfigStruct) RegisterPostParser(name string, f func(cfg *ConfigStru
 	return
 }
 
+func (self *ConfigStruct) RegisterCoroutine(name string, f func(cfg *ConfigStruct)) {
+	self.coroutines[name] = f
+	return
+}
+
+func (self *ConfigStruct) GetCoroutines() map[string]func(cfg *ConfigStruct){
+	return self.coroutines
+}
+
+
 func init() {
 	fmt.Println("Registry init called...")
 	once.Do(func() {
 		fmt.Println("Registry once.Do called...")
 		Config = &ConfigStruct{}
+		Config.coroutines = make(map[string]func(cfg *ConfigStruct))
 		Config.data = make(map[string]string)
 		Config.handlers    = make(map[string]func(*BotAPI, interface{}, string))
 		Config.help        = make(map[string]string)
