@@ -33,6 +33,7 @@ type BotAPI struct {
 			Build     string
 			BuildDate string
 			Version   string
+			ProjectURL string
 		}
 		GetCachedItem      func(string) string
 		SetCachedItems     func(string, map[int]string) string
