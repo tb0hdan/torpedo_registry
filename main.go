@@ -26,6 +26,15 @@ func (rm *RichMessage) ToGenericAttachment() (msg, url string) {
 	return
 }
 
+type UserProfile struct {
+	Nick string
+	RealName string
+	Timezone string
+	Phone string
+	Email string
+	IsBot bool
+}
+
 type BotAPI struct {
 	API interface{}
 	Bot struct {
@@ -49,6 +58,7 @@ type BotAPI struct {
 		PostMessage func(interface{}, string, *BotAPI, ...interface{})
 	}
 	CommandPrefix string
+	UserProfile	*UserProfile
 }
 
 type ConfigStruct struct {
