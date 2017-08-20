@@ -33,6 +33,7 @@ type UserProfile struct {
 	Phone string
 	Email string
 	IsBot bool
+	ID string
 }
 
 type BotAPI struct {
