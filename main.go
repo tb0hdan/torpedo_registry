@@ -34,6 +34,16 @@ type UserProfile struct {
 	Email string
 	IsBot bool
 	ID string
+	// Required for IRC (?)
+	Server string
+}
+
+type MessageHistoryItem struct {
+	Timestamp int64
+	Channel   string
+	Sender    string
+	Nick      string
+	Message   string
 }
 
 type BotAPI struct {
