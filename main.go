@@ -27,13 +27,13 @@ func (rm *RichMessage) ToGenericAttachment() (msg, url string) {
 }
 
 type UserProfile struct {
-	Nick string
+	Nick     string
 	RealName string
 	Timezone string
-	Phone string
-	Email string
-	IsBot bool
-	ID string
+	Phone    string
+	Email    string
+	IsBot    bool
+	ID       string
 	// Required for IRC (?)
 	Server string
 }
@@ -50,9 +50,9 @@ type BotAPI struct {
 	API interface{}
 	Bot struct {
 		Build struct {
-			Build     string
-			BuildDate string
-			Version   string
+			Build      string
+			BuildDate  string
+			Version    string
 			ProjectURL string
 		}
 		GetCachedItem      func(string) string
@@ -69,20 +69,26 @@ type BotAPI struct {
 		PostMessage func(interface{}, string, *BotAPI, ...interface{})
 	}
 	CommandPrefix string
-	UserProfile	*UserProfile
+	UserProfile   *UserProfile
 }
 
 type ConfigStruct struct {
-	coroutines  map[string]func(cfg *ConfigStruct)
-	data		map[string]string
-	handlers	map[string]func(*BotAPI, interface{}, string)
-	help		map[string]string
-	preparsers	map[string]func(cfg *ConfigStruct)
-	postparsers	map[string]func(cfg *ConfigStruct)
+	coroutines   map[string]func(cfg *ConfigStruct)
+	data         map[string]string
+	handlers     map[string]func(*BotAPI, interface{}, string)
+	textHandlers map[string]func(*BotAPI, interface{}, string)
+	help         map[string]string
+	preparsers   map[string]func(cfg *ConfigStruct)
+	postparsers  map[string]func(cfg *ConfigStruct)
 }
 
 func (self *ConfigStruct) RegisterHandler(name string, f func(*BotAPI, interface{}, string)) {
 	self.handlers[name] = f
+	return
+}
+
+func (self *ConfigStruct) RegisterTextMessageHandler(name string, f func(*BotAPI, interface{}, string)) {
+	self.textHandlers[name] = f
 	return
 }
 
@@ -93,6 +99,10 @@ func (self *ConfigStruct) RegisterHelp(name, help_str string) {
 
 func (self *ConfigStruct) GetHandlers() map[string]func(*BotAPI, interface{}, string) {
 	return self.handlers
+}
+
+func (self *ConfigStruct) GetTextMessageHandlers() map[string]func(*BotAPI, interface{}, string) {
+	return self.textHandlers
 }
 
 func (self *ConfigStruct) GetHelp() map[string]string {
@@ -131,10 +141,9 @@ func (self *ConfigStruct) RegisterCoroutine(name string, f func(cfg *ConfigStruc
 	return
 }
 
-func (self *ConfigStruct) GetCoroutines() map[string]func(cfg *ConfigStruct){
+func (self *ConfigStruct) GetCoroutines() map[string]func(cfg *ConfigStruct) {
 	return self.coroutines
 }
-
 
 func init() {
 	fmt.Println("Registry init called...")
@@ -143,8 +152,9 @@ func init() {
 		Config = &ConfigStruct{}
 		Config.coroutines = make(map[string]func(cfg *ConfigStruct))
 		Config.data = make(map[string]string)
-		Config.handlers    = make(map[string]func(*BotAPI, interface{}, string))
-		Config.help        = make(map[string]string)
+		Config.handlers = make(map[string]func(*BotAPI, interface{}, string))
+		Config.textHandlers = make(map[string]func(*BotAPI, interface{}, string))
+		Config.help = make(map[string]string)
 		Config.preparsers = make(map[string]func(cfg *ConfigStruct))
 		Config.postparsers = make(map[string]func(cfg *ConfigStruct))
 	})
