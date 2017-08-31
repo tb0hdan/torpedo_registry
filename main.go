@@ -47,8 +47,9 @@ type MessageHistoryItem struct {
 }
 
 type BotAPI struct {
-	API interface{}
-	Bot struct {
+	API         interface{}
+	ProtocolAPI interface{}
+	Bot         struct {
 		Build struct {
 			Build      string
 			BuildDate  string
