@@ -1,8 +1,8 @@
 package torpedo_registry
 
 import (
-	"fmt"
 	"sync"
+	common "github.com/tb0hdan/torpedo_common"
 )
 
 var Config *ConfigStruct
@@ -147,9 +147,11 @@ func (self *ConfigStruct) GetCoroutines() map[string]func(cfg *ConfigStruct) {
 }
 
 func init() {
-	fmt.Println("Registry init called...")
+	cu := common.Utils{}
+	logger := cu.NewLog("torpedo-registry")
+	logger.Println("Registry init called...")
 	once.Do(func() {
-		fmt.Println("Registry once.Do called...")
+		logger.Println("Registry once.Do called...")
 		Config = &ConfigStruct{}
 		Config.coroutines = make(map[string]func(cfg *ConfigStruct))
 		Config.data = make(map[string]string)
