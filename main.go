@@ -3,6 +3,8 @@ package torpedo_registry
 import (
 	"sync"
 	common "github.com/tb0hdan/torpedo_common"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 var Config *ConfigStruct
@@ -39,6 +41,7 @@ type UserProfile struct {
 }
 
 type MessageHistoryItem struct {
+	ID       bson.ObjectId `bson:"_id,omitempty"`
 	Timestamp int64
 	Channel   string
 	Sender    string
