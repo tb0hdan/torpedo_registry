@@ -7,8 +7,11 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-var Config *ConfigStruct
-var once sync.Once
+var (
+	Accounts *AccountsStruct
+	Config *ConfigStruct
+	once sync.Once
+	)
 
 type RichMessage struct {
 	BarColor  string
@@ -155,6 +158,7 @@ func init() {
 	logger.Println("Registry init called...")
 	once.Do(func() {
 		logger.Println("Registry once.Do called...")
+		//
 		Config = &ConfigStruct{}
 		Config.coroutines = make(map[string]func(cfg *ConfigStruct))
 		Config.data = make(map[string]string)
@@ -163,5 +167,8 @@ func init() {
 		Config.help = make(map[string]string)
 		Config.preparsers = make(map[string]func(cfg *ConfigStruct))
 		Config.postparsers = make(map[string]func(cfg *ConfigStruct))
+		// Accounts
+		Accounts = &AccountsStruct{}
+		Accounts.accounts = make([]*Account, 0)
 	})
 }
