@@ -59,6 +59,7 @@ type BotAPI struct {
 		Build struct {
 			Build      string
 			BuildDate  string
+			GoVersion  string
 			Version    string
 			ProjectURL string
 		}
